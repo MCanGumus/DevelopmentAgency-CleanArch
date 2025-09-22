@@ -1,0 +1,59 @@
+﻿@using DA.Domain.Dtos
+@using DA.Domain.Entities
+@using DA.Domain.Entities.OldDatas
+@using DA.Domain.Enums
+@using DA.Models
+
+@model List<OldEmployees>
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Tc</th>
+            <th>Ad Soyad</th>
+            <th>Baba Adı</th>
+            <th>Anne Adı</th>
+            <th>Doğum Yeri</th>
+            <th>Doğum Tarihi</th>
+            <th>İşe Başlama</th>
+            <th>Kan Grubu</th>
+            <th>Cinsiyet</th>
+            <th>Email</th>
+            <th>Yetki</th>
+            <th>Toplam İzin</th>
+            <th>Sicil No</th>
+            <th>Ünvan</th>
+            <th>Birim</th>
+            <th>Amir</th>
+            <th>Durum</th>
+            <th>Değerlendirme</th>
+            <th>Çıkış Mı?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (OldEmployees item in Model)
+        {
+            <tr id="@item.Id.ToString()">
+                <td>@item.Tc</td>
+                <td>@item.AdSoyad</td>
+                <td>@item.BabaAdi</td>
+                <td>@item.AnneAdi</td>
+                <td>@item.DogumYeri</td>
+                <td>@item.DogumTarihi?.ToString("dd/MM/yyyy")</td> <!-- Date formatted -->
+                <td>@item.IseBaslama?.ToString("dd/MM/yyyy")</td>
+                <td>@item.Kan_ID</td>
+                <td>@item.Cin_ID</td>
+                <td>@item.Email</td>
+                <td>@item.Yetki</td>
+                <td>@item.Tizin</td>
+                <td>@item.SicilNo</td>
+                <td>@item.Unvan_Id</td>
+                <td>@item.Birim_ID</td>
+                <td>@item.Amir_ID</td>
+                <td>@(item.Durum == true ? "Aktif" : "Pasif")</td>
+                <td>@(item.Degerlendirme == true ? "Evet" : "Hayır")</td>
+                <td>@(item.cikisMi == true ? "Evet" : "Hayır")</td>
+            </tr>
+        }
+    </tbody>
+</table>

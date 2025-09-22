@@ -1,0 +1,70 @@
+﻿@using DA.Domain.Dtos
+@model List<GSMNumberDto>
+
+<!-- Ekle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalGSM" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni Numara Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="GSMNumbers/Save">
+                        <input type="hidden" name="Id" />
+                        <div class="row mb-2">
+                            <label for="GSM" class="col-sm-2 col-form-label pt-0">GSM Numarası</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="GSM" name="GSM" class="form-control" maxlength="50" placeholder="GSM Numarası" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Güncelle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalUpdateGSM" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni Mail Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="GSMNumbers/Update">
+                        <input type="hidden" id="uId" name="Id" />
+                        <div class="row mb-2">
+                            <label for="GSM" class="col-sm-2 col-form-label pt-0">GSM Numarası</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="uGSM" name="GSM" class="form-control" maxlength="50" placeholder="GSM Numarası" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

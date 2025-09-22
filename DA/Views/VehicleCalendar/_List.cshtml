@@ -1,0 +1,137 @@
+﻿@using DA.Domain.Dtos
+@using DA.Domain.Entities
+@using DA.Domain.Enums
+@using DA.Models
+
+@model VehicleCalendarModel
+
+<script>
+    @{
+        var daysInMonth = DateTime.DaysInMonth(Model.Filter.Year, Model.Filter.Month);
+        var firstDayOfMonth = new DateTime(Model.Filter.Year, Model.Filter.Month, 1);
+        var currentDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+        if (currentDayOfWeek == 0) currentDayOfWeek = 7;
+        else
+        {
+            currentDayOfWeek -= 1;
+        } // Pazar gününü haftanın son günü olarak kabul et
+    }
+</script>
+
+
+<style>
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Öğeler arasındaki boşluk */
+    }
+
+</style>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Pazartesi</th>
+            <th>Salı</th>
+            <th>Çarşamba</th>
+            <th>Perşembe</th>
+            <th>Cuma</th>
+            <th>Cumartesi</th>
+            <th>Pazar</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @for (int week = 1; week <= 6; week++)
+        {
+            <tr>
+                @if (week == 1)
+                {
+
+                    @for (int i = 1; i <= currentDayOfWeek; i++)
+                    {
+                        <td>
+                        </td>
+                    }
+                    @for (int k = currentDayOfWeek; k < 7; k++)
+                    {
+                        <td>
+                            <div class="card card-dark-blue">
+                                <div class="card-body">
+                                    <p class="fS20 mb-2">@firstDayOfMonth.ToString("dd MMMM yyyy dddd")</p>
+                                    @if (Model.Requests[firstDayOfMonth].Count != 0)
+                                    {
+                                        @foreach (var item in Model.Requests[firstDayOfMonth])
+                                        {
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-info"
+                                                        title="@(item.Mission == null ? item.Description+ "(" + item.DateOfStart + " - " + item.DateOfEnd + ")" : item.Mission.Subject + "(" + item.DateOfStart.ToString("dd.MM.yyyy HH:mm") + "-" + item.DateOfEnd.ToString("dd.MM.yyyy HH:mm") + ")")">
+                                                    @item.Vehicle.Plate<br />@(item.Mission == null ? "" : "(" + item.Mission.Employee.Name) @(item.Mission == null ? "" : item.Mission.Employee.Surname + ")")
+                                                </button>
+                                                @if (Model.Passengers[item.Id].Count != 0)
+                                                {
+                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" id="dropdownMenuSplitButton6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <span class="sr-only">Yolcular</span>
+                                                    </button>
+                                                    @foreach (var pass in Model.Passengers[item.Id])
+                                                    {
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuSplitButton6" style="">
+                                                            <h6 class="dropdown-header">@pass.Employee.Name @pass.Employee.Surname</h6>
+
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        firstDayOfMonth = firstDayOfMonth.AddDays(1);
+                    }
+                }
+                else
+                {
+                    @for (int weekDay = 1; weekDay <= 7; weekDay++)
+                    {
+                        <td>
+                            @if (firstDayOfMonth.Month == Model.Filter.Month)
+                            {
+                                <div class="card card-dark-blue">
+                                    <div class="card-body">
+                                        <p class="fS20 mb-2">@firstDayOfMonth.ToString("dd MMMM yyyy dddd")</p>
+                                        @if (Model.Requests[firstDayOfMonth].Count != 0)
+                                        {
+                                            @foreach (var req in Model.Requests[firstDayOfMonth])
+                                            {
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-info"
+                                                            title="@(req.Mission == null ? req.Description+ "(" + req.DateOfStart + " - " + req.DateOfEnd + ")" : req.Mission.Subject + "(" + req.DateOfStart.ToString("dd.MM.yyyy HH:mm") + "-" + req.DateOfEnd.ToString("dd.MM.yyyy HH:mm") + ")")">
+                                                        @req.Vehicle.Plate<br />@(req.Mission == null ? "" : "(" +req.Mission.Employee.Name) @(req.Mission == null ? "" : req.Mission.Employee.Surname + ")")
+                                                    </button>
+                                                    @if (Model.Passengers[req.Id].Count != 0)
+                                                    {
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" id="dropdownMenuSplitButton6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <span class="sr-only">Yolcular</span>
+                                                        </button>
+                                                        @foreach (var pass in Model.Passengers[req.Id])
+                                                        {
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuSplitButton6" style="">
+                                                                <h6 class="dropdown-header">@pass.Employee.Name @pass.Employee.Surname</h6>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                        firstDayOfMonth = firstDayOfMonth.AddDays(1);
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

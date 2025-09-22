@@ -1,0 +1,46 @@
+﻿@using DA.Domain.Dtos
+@using DA.Domain.Entities
+@using DA.Domain.Entities.OldDatas
+@using DA.Domain.Enums
+@using DA.Models
+
+@model OldMissionsModel
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Görüş Id</th>
+            <th>Personel Id</th>
+            <th>Tür Id</th>
+            <th>Yer</th>
+            <th>Konu</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Dönüş Tarihi</th>
+            <th>Gidiş Araç Id</th>
+            <th>Dönüş Araç Id</th>
+            <th>Vekil Id</th>
+            <th>Görev Not</th>
+            <th>Avans</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (OldMissions item in Model.Missions)
+        {
+            <tr id="@item.Id.ToString()">
+                <td>@item.Gor_Id</td>
+                <td>@item.Personel_ID</td>
+                <td>@item.Tur_ID</td>
+                <td>@item.Yer</td>
+                <td>@item.Konu</td>
+                <td>@item.B_Tarih?.ToString("dd/MM/yyyy")</td> <!-- Date formatted -->
+                <td>@item.G_Tarih?.ToString("dd/MM/yyyy")</td>
+                <td>@item.G_Arac</td>
+                <td>@item.D_Arac</td>
+                <td>@item.VekID</td>
+                <td>@item.GorNot</td>
+                <td>@item.Avans</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

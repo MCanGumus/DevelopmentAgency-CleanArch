@@ -1,0 +1,102 @@
+﻿@using DA.Components.System
+@using DA.Domain.Dtos
+@using DA.Domain.Enums
+@using DA.Models
+
+@model DepartmentAndEmployees
+
+@{
+    LoginSessionModel loginnedEmployee = SessionHelper.GetEmployeeLoggingIn(Context);
+
+    string userName = "";
+    string userRole = "";
+    string userPhoto = "";
+    string pageTitle = "DA";
+
+    if (loginnedEmployee != null)
+    {
+        userName = loginnedEmployee.UserName;
+        userRole = loginnedEmployee.Role;
+        userPhoto = loginnedEmployee.Photo;
+    }
+    else
+    {
+        Context.Response.Redirect("/");
+    }
+}
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            @if (userRole == "SuperAdmin" || userRole == "Admin")
+            {
+                <th>Adı-Soyadı</th>
+                <th>T.C. Kimlik No</th>
+                <th>Telefon Numarası</th>
+                <th>Doğum Yeri</th>
+                <th>Doğum Tarihi</th>
+                <th>Kan Grubu</th>
+                <th>Cinsiyet</th>
+                <th>Birim</th>
+                <th class="text-center">İşlemler</th>
+            }
+            else
+            {
+                <th>Adı-Soyadı</th>
+                <th>Telefon Numarası</th>
+                <th>Mail Adresi</th>
+                <th>Birim</th>
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Employees.Count != 0)
+        {
+            if (userRole == "SuperAdmin" || userRole == "Admin")
+            {
+                @foreach (EmployeeDto item in Model.Employees)
+                {
+                    <tr id="@item.Id.ToString()">
+                        <td>@item.Name @item.Surname</td>
+                        <td>@item.IdentificationNumber</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.PlaceOfBirth</td>
+                        <td>@item.DateOfBirth.ToString("yyyy.MM.dd")</td>
+                        <td>@StrBloodGroup.StrEnumBloodGroup((EnumBloodGroup)item.BloodGroup)</td>
+                        <td>@item.Gender.ToString()</td>
+                        <td>@(item.Department == null ? "Belirtilmemiş" : item.Department.Name)</td>
+                        <td>
+                            @if (userRole == "SuperAdmin")
+                            {
+                                <a onclick="AjaxMethod('Employees/DetailedEmployeePage', '@item.Id.ToString()', 'DetailedPage')" href=""><i class="mdi mdi-fingerprint text-warning md20"></i></a>
+                                <a onclick="AjaxMethod('Employees/OpenDetail', '@item.Id.ToString()', 'OpenDetail')" href=""><i class="mdi mdi-file text-info md20"></i></a>
+                                <a onclick="AjaxMethod('Employees/OpenModal', '@item.Id.ToString()', 'Update')" href=""><i class="mdi mdi-table-edit text-success md20"></i></a>
+                                <a onclick="AjaxMethod('Employees/Delete', '@item.Id.ToString()', 'Delete')" href=""><i class="mdi mdi-delete text-danger md20"></i></a>
+                            }
+                            else
+                            {
+                                <a onclick="AjaxMethod('Employees/OpenDetail', '@item.Id.ToString()', 'OpenDetail')" href=""><i class="mdi mdi-file text-info md20"></i></a>
+                               
+                            }  
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                @foreach (EmployeeDto item in Model.Employees)
+                {
+                    <tr id="@item.Id.ToString()">
+                        <td>@item.Name @item.Surname</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Email</td>
+                        <td>@(item.Department == null ? "Belirtilmemiş" : item.Department.Name)</td>
+                    </tr>
+                }
+            }
+
+            
+        }
+    </tbody>
+</table>

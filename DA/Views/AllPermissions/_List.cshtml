@@ -1,0 +1,83 @@
+﻿@using DA.Controllers
+@using DA.Domain.Dtos
+@using DA.Domain.Enums
+@using DA.Models
+
+@model PermissionsWithHolidays
+
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Personel Adı</th>
+            <th>Departman Adı</th>
+            <th>İzin Başlangıç Tarihi</th>
+            <th>İşe Başlangıç Tarihi</th>
+            <th>Gün Sayısı</th>
+            <th>İzin Nedeni</th>
+            <th>İzin Adresi</th>
+            <th>Durumu</th>
+            <th class="text-center">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Permissions.Count != 0)
+        {
+            List<PublicHolidayDto> phList = Model.Holidays;
+
+            var holidays = phList;
+
+            foreach (var item in holidays)
+            {
+                if (item.IsNationalHoliday)
+                {
+                    item.Date = new DateTime(DateTime.Now.Year, item.Date.Month, item.Date.Day);
+                }
+            }
+
+            @foreach (PermissionDto item in Model.Permissions)
+            {
+
+                int day = 0;
+
+                for (DateTime date = item.StartDate; date < item.EndDate; date = date.AddDays(1))
+                {
+                    if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        if (!holidays.Any(x => x.Date == date))
+                        {
+                            day++;
+                        }
+                    }
+                }
+                
+
+                <tr id="@item.Id.ToString()">
+                    <td>@item.Employee.Name @item.Employee.Surname</td>
+                    <td>@item.Department.Name</td>
+                    <td>@item.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@day gün</td>
+                    <td>@item.PermissionReason</td>
+                    <td>@item.PermissionAddress</td>
+                    <td>@PermissionController.StateTR(item.State)</td>
+                    <td>
+                        <a onclick="AjaxMethod('Permissions/OpenDetail', '@item.Id.ToString()', 'OpenDetail')" href=""><i class="mdi mdi-file text-info md20"></i></a>
+                        @if (item.State == EnumState.Pending)
+                        {
+                            <a class="btn btn-success" onclick="AjaxMethod('AllPermissions/Accept', '@item.Id.ToString()', 'AcceptPermission')" href="">Kabul Et</a>
+                            <a class="btn btn-danger" onclick="AjaxMethod('AllPermissions/Reject', '@item.Id.ToString()', 'RejectPermission')" href="">Reddet</a>
+                        }
+                        else if (item.State == EnumState.Accepted)
+                        {
+                            <a onclick="AjaxMethod('Permissions/ExportDocument', '@item.Id.ToString()', 'Print')" href=""><i class="mdi mdi-printer text-warning md20"></i></a>
+                            <a class="btn btn-danger" onclick="AjaxMethod('AllPermissions/Reject', '@item.Id.ToString()', 'RejectPermission')" href="">Reddet</a>
+                        }
+                        
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>

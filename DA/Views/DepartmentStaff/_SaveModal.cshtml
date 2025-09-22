@@ -1,0 +1,109 @@
+﻿@using DA.Models
+@model DepartmentStaffModel
+<!-- Modal Ekle-->
+<div class="container">
+    <div class="modal fade" id="ModalDepartmentStaff" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni Departman Personeli Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="DepartmentStaffs/Save">
+                        <input type="hidden" name="Id" />
+                        <div class="row mb-2">
+                            <label for="IdEmployeeFK" class="col-sm-2 col-form-label pt-0">Personel</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="IdEmployeeFK" name="IdEmployeeFK" class="form-control select2" style="width: 100%">
+                                    @foreach (var item in Model.DepartmentAndEmployees.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="IdApellationFK" class="col-sm-2 col-form-label pt-0">Ünvan</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="IdApellationFK" name="IdApellationFK" class="form-control select2" style="width: 100%">
+                                    @foreach (var item in Model.Apellations)
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-2 fr">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ekle-->
+<div class="container">
+    <div class="modal fade" id="ModalUpdateDepartmentStaff" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Title" class="font-weight-bold">Veriyi Güncelle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="DepartmentStaffs/Update">
+                        <input type="hidden" id="uId" name="Id" />
+                        <div class="row mb-2">
+                            <label for="IdEmployeeFK" class="col-sm-2 col-form-label pt-0">Personel</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uIdEmployeeFK" name="IdEmployeeFK" class="form-control select2" style="width: 100%">
+                                    @foreach (var item in Model.DepartmentAndEmployees.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <label for="uIdApellationFK" class="col-sm-2 col-form-label pt-0">Ünvan</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uIdApellationFK" name="IdApellationFK" class="form-control select2" style="width: 100%">
+                                    @foreach (var item in Model.Apellations)
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-2 fr">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

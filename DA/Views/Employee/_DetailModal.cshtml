@@ -1,0 +1,248 @@
+﻿@using DA.Components.System
+@using DA.Models
+@{
+    LoginSessionModel loginnedEmployee = SessionHelper.GetEmployeeLoggingIn(Context);
+
+    string userName = "";
+    string userRole = "";
+    string userPhoto = "";
+    string pageTitle = "DA";
+
+    if (loginnedEmployee != null)
+    {
+        userName = loginnedEmployee.UserName;
+        userRole = loginnedEmployee.Role;
+        userPhoto = loginnedEmployee.Photo;
+    }
+    else
+    {
+        Context.Response.Redirect("/");
+    }
+}
+
+<style>
+
+    .tabs {
+        display: flex;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px;
+    }
+
+        .tabs button {
+            padding: 10px 20px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background-color: #f1f1f1;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-bottom 0.3s ease;
+            font-size: 16px;
+        }
+
+            .tabs button:hover {
+                background-color: #e1e1e1;
+            }
+
+            .tabs button.active {
+                background-color: #fff;
+                border-bottom: 2px solid #007bff;
+                font-weight: bold;
+            }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-top: none;
+        background-color: #fff;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+</style>
+
+<div class="container">
+    <div class="modal fade" id="ModalDetailEmployee" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Title" class="font-weight-bold">Yeni Personel Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="dId" name="Id" />
+                    <div class="tabs">
+                        <button class="tab-link active" data-tab="TabSummary">Özet Bilgiler</button>
+                        <button class="tab-link" data-tab="TabAcademia">Akademik Bilgiler</button>
+                        <button class="tab-link" data-tab="TabAddresses">Adresler</button>
+                        <button class="tab-link" data-tab="TabEmails">E-Mail Adresleri</button>
+                        <button class="tab-link" data-tab="TabNumbers">Telefon Numaraları</button>
+                        @if (userRole == "SuperAdmin")
+                        {
+                            <button class="tab-link" data-tab="TabExit">Detaylı İşlemler</button>
+                        }
+                    </div>
+
+                    <div class="tab-content active" id="TabSummary">
+                        <div class="form-horizontal mt15">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">T.C. Kimlik No:</div>
+                                <div class="col-sm-8" id="sIdentificationNumber"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Telefon Numarası:</div>
+                                <div class="col-sm-8" id="sPhoneNumber"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Adı:</div>
+                                <div class="col-sm-8" id="sName"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Soyadı:</div>
+                                <div class="col-sm-8" id="sSurname"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Ünvanı:</div>
+                                <div class="col-sm-8" id="sApellation"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Anne Adı:</div>
+                                <div class="col-sm-8" id="sMotherName"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Baba Adı:</div>
+                                <div class="col-sm-8" id="sFatherName"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Doğum Yeri:</div>
+                                <div class="col-sm-8" id="sPlaceOfBirth"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Doğum Tarihi:</div>
+                                <div class="col-sm-8" id="sDateOfBirth"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Kan Grubu:</div>
+                                <div class="col-sm-8" id="sBloodGroup"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Cinsiyet:</div>
+                                <div class="col-sm-8" id="sGender"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">E-posta:</div>
+                                <div class="col-sm-8" id="sEmail"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Yetkilendirme Durumu:</div>
+                                <div class="col-sm-8" id="sAuthorizationStatus"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Yenilenen Yıllık İzin Günü:</div>
+                                <div class="col-sm-8" id="sRefresherYearlyLeave"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Toplam Yıllık İzin Günü:</div>
+                                <div class="col-sm-8" id="sTotalYearlyLeave"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Toplam Ücretsiz İzin Günü:</div>
+                                <div class="col-sm-8" id="sTotalUnpaidLeave"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Toplam Mazaretli İzin Günü:</div>
+                                <div class="col-sm-8" id="sTotalExcusedLeave"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Toplam Denkleştirme İzin Günü:</div>
+                                <div class="col-sm-8" id="sTotalEqualizationLeave"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">İşe Başlama Tarihi:</div>
+                                <div class="col-sm-8" id="sDateOfStart"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">İşten Çıkarılma Tarihi:</div>
+                                <div class="col-sm-8" id="sExitedDate"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Birim</div>
+                                <div class="col-sm-8" id="sIdDepartmentFK"></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 font-weight-bold">Üst:</div>
+                                <div class="col-sm-8" id="sChief"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="TabAcademia">
+                        <div class="form-horizontal mt15">
+                            <div id="AcademiaHtml" style="overflow: auto; display: block;">
+                                Akademik Bilgiler İçeriği
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="TabAddresses">
+                        <div class="form-horizontal mt15">
+                            <div id="AddressesHtml" style="overflow: auto; display: block;">
+                                Adresler İçeriği
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="TabEmails">
+                        <div class="form-horizontal mt15">
+                            <div id="EmailsHtml" style="overflow: auto; display: block;">
+                                E-Mail Adresleri İçeriği
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="TabNumbers">
+                        <div class="form-horizontal mt15">
+                            <div id="GSMSHtml" style="overflow: auto; display: block;">
+                                Telefon Numaraları İçeriği
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (userRole == "SuperAdmin")
+                    {
+                        <div class="tab-content" id="TabExit">
+                            <div class="form-horizontal mt15">
+                                <div id="ExitHtml" style="overflow: auto; display: block;">
+                                    <label for="DateOfExit" class="col-sm-2 col-form-label pt-0">Çıkış Tarihi</label>
+                                    <div class="col-lg-4 col-md-4 col-sm-5">
+                                        <input type="date" id="DateOfExit" name="DateOfBirth" class="form-control" />
+                                    </div>
+                                    <button id="GetLaidOffEmployee" class="btn btn-danger mb-4 fr">Çalışanı İşten Çıkar</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $('.tab-link').click(function () {
+                                var tabId = $(this).data('tab');
+
+                                $('.tab-link').removeClass('active');
+                                $(this).addClass('active');
+
+                                $('.tab-content').removeClass('active');
+                                $('#' + tabId).addClass('active');
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

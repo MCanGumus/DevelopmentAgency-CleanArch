@@ -1,0 +1,350 @@
+﻿@using DA.Domain.Dtos
+@using DA.Models
+@model DepartmentAndEmployees
+
+<!-- Ekle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalEmployee" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni Personel Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Employees/Save">
+                        <input type="hidden" name="Id" />
+                        <div class="row mb-2">
+                            <label for="IdentificationNumber" class="col-sm-2 col-form-label pt-0">T.C. Kimlik No</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="IdentificationNumber" name="IdentificationNumber" class="form-control" maxlength="11" placeholder="T.C. Kimlik No" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PhoneNumber" class="col-sm-2 col-form-label pt-0">Telefon Numarası</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="PhoneNumber" name="PhoneNumber" class="form-control" maxlength="20" placeholder="Telefon Numarası" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Apellation" class="col-sm-2 col-form-label pt-0">Ünvan</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="Apellation" name="Apellation" class="form-control" maxlength="150" placeholder="Ünvan" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Name" class="col-sm-2 col-form-label pt-0">Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="Name" name="Name" class="form-control" maxlength="50" placeholder="Adı" />
+                            </div>
+                            <label for="Surname" class="col-sm-2 col-form-label pt-0">Soyadı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="Surname" name="Surname" class="form-control" maxlength="50" placeholder="Soyadı" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="MotherName" class="col-sm-2 col-form-label pt-0">Anne Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="MotherName" name="MotherName" class="form-control" maxlength="50" placeholder="Anne Adı" />
+                            </div>
+                            <label for="FatherName" class="col-sm-2 col-form-label pt-0">Baba Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="FatherName" name="FatherName" class="form-control" maxlength="50" placeholder="Baba Adı" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PlaceOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Yeri</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="PlaceOfBirth" name="PlaceOfBirth" class="form-control" maxlength="50" placeholder="Doğum Yeri" />
+                            </div>
+                            <label for="DateOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="BloodGroup" class="col-sm-2 col-form-label pt-0">Kan Grubu</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="BloodGroup" name="BloodGroup" class="form-control select2" style="width: 100%">
+                                    <option value="1">A+</option>
+                                    <option value="2">A-</option>
+                                    <option value="3">B+</option>
+                                    <option value="4">B-</option>
+                                    <option value="5">AB+</option>
+                                    <option value="6">AB-</option>
+                                    <option value="7">0+</option>
+                                    <option value="8">0-</option>
+                                </select>
+                            </div>
+                            <label for="Gender" class="col-sm-2 col-form-label pt-0">Cinsiyet</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="Gender" name="Gender" class="form-control select2" style="width: 100%">
+                                    <option value="1">Erkek</option>
+                                    <option value="2">Kadın</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Email" class="col-sm-2 col-form-label pt-0">E-posta</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="email" id="Email" name="Email" class="form-control" maxlength="50" placeholder="E-posta" />
+                            </div>
+                            <label for="Password" class="col-sm-2 col-form-label pt-0">Şifre</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="password" id="Password" name="Password" class="form-control" maxlength="50" placeholder="Şifre" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="AuthorizationStatus" class="col-sm-2 col-form-label pt-0">Yetkilendirme Durumu</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="AuthorizationStatus" name="AuthorizationStatus" class="form-control select2" style="width: 100%">
+                                    <option value="1">Personel</option>
+                                    <option value="2">Admin</option>
+                                    <option value="3">Super Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="TotalLeave" class="col-sm-2 col-form-label pt-0">Yıllık İzin Sayısı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="TotalYearlyLeave" name="TotalYearlyLeave" class="form-control" placeholder="Yıllık İzin Günü" />
+                            </div>
+                            <label for="TotalExcusedLeave" class="col-sm-2 col-form-label pt-0">Mazaretli İzin </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="TotalExcusedLeave" name="TotalExcusedLeave" class="form-control" placeholder="Mazaretli İzin Günü" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="TotalUnpaidLeave" class="col-sm-2 col-form-label pt-0">Ücretsiz İzin </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="TotalUnpaidLeave" name="TotalUnpaidLeave" class="form-control" placeholder="Ücretsiz İzin Günü" />
+                            </div>
+                            <label for="TotalEqualizationLeave" class="col-sm-2 col-form-label pt-0">Denkleştirme İzni </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="TotalEqualizationLeave" name="TotalEqualizationLeave" class="form-control" placeholder="Denkleştirme İzin Günü" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="DateOfStart" class="col-sm-2 col-form-label pt-0">İşe Başlama Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="DateOfStart" name="DateOfStart" class="form-control" />
+                            </div>
+                            <label for="Chief" class="col-sm-2 col-form-label pt-0">Üst</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="Chief" name="Chief" class="form-control select2" style="width: 100%">
+                                    <option value="0">Yok</option>
+                                    @foreach (var item in Model.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="IdDepartmentFK" class="col-sm-2 col-form-label pt-0">Birim</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="IdDepartmentFK" name="IdDepartmentFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Yok</option>
+                                    @foreach (var item in Model.Departments)
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="RefresherYearlyLeave" class="col-sm-2 col-form-label pt-0"> Yenilenen Yıllık İzin Sayısı</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input type="number" id="RefresherYearlyLeave" name="RefresherYearlyLeave" class="form-control" maxlength="150" placeholder=" Yenilenen Yıllık İzin Sayısı(Kişinin işe giriş yılında sistem tarafından yenilenen izin günü sayısıdır.)" />
+                            </div>
+                        </div>
+                        <label class="fs13">*Yıllık Yenilenen İzin Sayısı ve Yıllık İzin Sayısı ayrı şeylerdir. Eğer kişi işe giriş yıldönümünde ise Yıllık İzin Sayısına, Yenilenen Yıllık İzin Sayısı kadar otomatik olarak eklenir. Bu yüzden Yıllık İzin Sayısına da Yenilenen Yıllık İzin Sayısına da bir değer atanmalıdır.  </label>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Güncelle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalUpdateEmployee" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="UpdateModalTitle" class="font-weight-bold">Yeni Personel Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Employees/Update">
+                        <input type="hidden" id="uId" name="Id" />
+                        <div class="row mb-2">
+                            <label for="IdentificationNumber" class="col-sm-2 col-form-label pt-0">T.C. Kimlik No</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="uIdentificationNumber" name="IdentificationNumber" class="form-control" maxlength="11" placeholder="T.C. Kimlik No" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PhoneNumber" class="col-sm-2 col-form-label pt-0">Telefon Numarası</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="uPhoneNumber" name="PhoneNumber" class="form-control" maxlength="20" placeholder="Telefon Numarası" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uApellation" class="col-sm-2 col-form-label pt-0">Ünvan</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input id="uApellation" name="Apellation" class="form-control" maxlength="150" placeholder="Ünvan" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Name" class="col-sm-2 col-form-label pt-0">Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="uName" name="Name" class="form-control" maxlength="50" placeholder="Adı" />
+                            </div>
+                            <label for="Surname" class="col-sm-2 col-form-label pt-0">Soyadı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="uSurname" name="Surname" class="form-control" maxlength="50" placeholder="Soyadı" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="MotherName" class="col-sm-2 col-form-label pt-0">Anne Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="uMotherName" name="MotherName" class="form-control" maxlength="50" placeholder="Anne Adı" />
+                            </div>
+                            <label for="FatherName" class="col-sm-2 col-form-label pt-0">Baba Adı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="uFatherName" name="FatherName" class="form-control" maxlength="50" placeholder="Baba Adı" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PlaceOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Yeri</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input id="uPlaceOfBirth" name="PlaceOfBirth" class="form-control" maxlength="50" placeholder="Doğum Yeri" />
+                            </div>
+                            <label for="DateOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="uDateOfBirth" name="DateOfBirth" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="BloodGroup" class="col-sm-2 col-form-label pt-0">Kan Grubu</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="uBloodGroup" name="BloodGroup" class="form-control select2" style="width: 100%">
+                                    <option value="1">A+</option>
+                                    <option value="2">A-</option>
+                                    <option value="3">B+</option>
+                                    <option value="4">B-</option>
+                                    <option value="5">AB+</option>
+                                    <option value="6">AB-</option>
+                                    <option value="7">0+</option>
+                                    <option value="8">0-</option>
+                                </select>
+                            </div>
+                            <label for="Gender" class="col-sm-2 col-form-label pt-0">Cinsiyet</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="uGender" name="Gender" class="form-control select2" style="width: 100%">
+                                    <option value="1">Erkek</option>
+                                    <option value="2">Kadın</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Email" class="col-sm-2 col-form-label pt-0">E-posta</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="email" id="uEmail" name="Email" class="form-control" maxlength="50" placeholder="E-posta" />
+                            </div>
+                            <label for="Password" class="col-sm-2 col-form-label pt-0">Şifre</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="password" id="uPassword" name="Password" class="form-control" maxlength="50" placeholder="Şifre" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uAuthorizationStatus" class="col-sm-2 col-form-label pt-0">Yetkilendirme Durumu</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uAuthorizationStatus" name="AuthorizationStatus" class="form-control select2" style="width: 100%">
+                                    <option value="1">Personel</option>
+                                    <option value="2">Admin</option>
+                                    <option value="3">Super Admin</option>
+                                    <option value="4">Yetkili Personel(Yalnızca Belirli Zamanlarda Kullanılır.)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uTotalLeave" class="col-sm-2 col-form-label pt-0">Yıllık İzin </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="uTotalYearlyLeave" name="TotalYearlyLeave" class="form-control" placeholder="Yıllık İzin Günü" />
+                            </div>
+                            <label for="uTotalExcusedLeave" class="col-sm-2 col-form-label pt-0">Mazaretli İzin </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="uTotalExcusedLeave" name="TotalExcusedLeave" class="form-control" placeholder="Mazaretli İzin Günü" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uTotalUnpaidLeave" class="col-sm-2 col-form-label pt-0">Ücretsiz İzin </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="uTotalUnpaidLeave" name="TotalUnpaidLeave" class="form-control" placeholder="Ücretsiz İzin Günü" />
+                            </div>
+                            <label for="uTotalEqualizationLeave" class="col-sm-2 col-form-label pt-0">Denkleştirme İzni </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                <input type="number" id="uTotalEqualizationLeave" name="TotalEqualizationLeave" class="form-control" placeholder="Denkleştirme İzin Günü" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="DateOfStart" class="col-sm-2 col-form-label pt-0">İşe Başlama Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="uDateOfStart" name="DateOfStart" class="form-control" />
+                            </div>
+                            <label for="Chief" class="col-sm-2 col-form-label pt-0">Üst</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="uChief" name="Chief" class="form-control select2" style="width: 100%">
+                                    <option value="0">Yok</option>
+                                    @foreach (var item in Model.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uIdDepartmentFK" class="col-sm-2 col-form-label pt-0">Birim</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uIdDepartmentFK" name="IdDepartmentFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Yok</option>
+                                    @foreach (var item in Model.Departments)
+                                    {
+                                        <option value="@item.Id.ToString()">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uRefresherYearlyLeave" class="col-sm-2 col-form-label pt-0"> Yenilenen Yıllık İzin Sayısı</label>
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <input type="number" id="uRefresherYearlyLeave" name="RefresherYearlyLeave" class="form-control" maxlength="150" placeholder=" Yenilenen Yıllık İzin Sayısı(Kişinin işe giriş yılında sistem tarafından yenilenen izin günü sayısıdır.)" />
+                            </div>
+                        </div>
+                        <label class="fs13">*Yıllık Yenilenen İzin Sayısı ve Yıllık İzin Sayısı ayrı şeylerdir. Eğer kişi işe giriş yıldönümünde ise Yıllık İzin Sayısına, Yenilenen Yıllık İzin Sayısı kadar otomatik olarak eklenir. Bu yüzden Yıllık İzin Sayısına da Yenilenen Yıllık İzin Sayısına da bir değer atanmalıdır.  </label>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

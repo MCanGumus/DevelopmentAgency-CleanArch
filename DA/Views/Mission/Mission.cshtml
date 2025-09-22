@@ -1,0 +1,219 @@
+﻿@using DA.Components.System
+@using DA.Domain.Dtos
+@using DA.Models
+@{
+    Layout = "_Layout";
+}
+@{
+    LoginSessionModel loginnedEmployee = SessionHelper.GetEmployeeLoggingIn(Context);
+
+    string userName = "";
+    string extendedRole = "";
+    string userRole = "";
+    string userPhoto = "";
+    string pageTitle = Constants.ProjectShortName;
+
+    if (loginnedEmployee != null)
+    {
+        extendedRole = loginnedEmployee.ExtendedRole.ToString();
+        userName = loginnedEmployee.UserName;
+        userRole = loginnedEmployee.Role;
+        userPhoto = loginnedEmployee.Photo;
+    }
+    else
+    {
+        Context.Response.Redirect("/");
+    }
+}
+
+@section scripts {
+
+    <script>
+
+        if ("@userRole" != "SuperAdmin" && "@extendedRole" == "false") {
+            $(document).ready(function () {
+                var today = new Date();
+
+                // Tarihi bir gün geriye al
+                today.setDate(today.getDate() - 7);
+
+                var year = today.getFullYear();
+                var month = (today.getMonth() + 1).toString().padStart(2, '0');
+                var day = today.getDate().toString().padStart(2, '0');
+                var hours = today.getHours().toString().padStart(2, '0');
+                var minutes = today.getMinutes().toString().padStart(2, '0');
+
+                // datetime-local formatı: YYYY-MM-DDTHH:MM
+                var minDate = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+
+                // input alanına minimum değeri ayarla
+                $('#DateOfStart').attr('min', minDate);
+                $('#DateOfEnd').attr('min', minDate);
+            });
+        }
+
+
+        $('#NewMission').on('click', function () {
+            $('#ModalMission').modal('show');
+        });
+
+        $('#IsAdvanceRequested').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#AdvanceAmount').val('');
+                $('#AdvanceAmount').prop("disabled", false);
+            }
+            else {
+                $('#AdvanceAmount').val('');
+                $('#AdvanceAmount').prop("disabled", true);
+            }
+        });
+
+        $('#uIsAdvanceRequested').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#uAdvanceAmount').val('');
+                $('#uAdvanceAmount').prop("disabled", false);
+            }
+            else {
+                $('#uAdvanceAmount').val('');
+                $('#uAdvanceAmount').prop("disabled", true);
+            }
+        });
+
+        /////////////////////////////////////////////newCodes/////////////////////////////////////////////////////////
+
+        //Single Vehicle Select Controller
+
+
+        $('#IsSingleVehicle').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#IsSingleVehicleLabel').text("Gidiş-Dönüş Farklı Araçlarla Gidecekseniz Burayı Tıklayın -->");
+                $('#SingleSelect').show();
+                $('#SeperatedSelects').hide();
+            }
+            else {
+                $('#IsSingleVehicleLabel').text("Gidiş-Dönüş Tek Araçla Gidecekseniz Burayı Tıklayın -->");
+                $('#SeperatedSelects').show();
+                $('#SingleSelect').hide();
+            }
+        });
+
+        function SetDateRangePickers(dateOfStart, dateOfEnd) {
+
+            var minDate = dateOfStart;
+            var maxDate = dateOfEnd;
+
+            $('#DepartureStartDate').attr('min', minDate);
+            $('#DepartureStartDate').attr('max', maxDate);
+
+            $('#DepartureEndDate').attr('min', minDate);
+            $('#DepartureEndDate').attr('max', maxDate);
+
+            $('#ReturnStartDate').attr('min', minDate);
+            $('#ReturnStartDate').attr('max', maxDate);
+
+            $('#ReturnEndDate').attr('min', minDate);
+            $('#ReturnEndDate').attr('max', maxDate);
+        }
+
+        $('#GetDepartureCars').on('click', function () {
+            var dateOfStart = $('#DepartureStartDate').val();
+            var dateOfEnd = $('#DepartureEndDate').val();
+
+            if (dateOfStart == null || dateOfStart == "") {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini giriniz.");
+                return;
+            }
+
+            if (dateOfEnd == null || dateOfEnd == "") {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini giriniz.");
+                return;
+            }
+
+            var startDate = new Date(dateOfStart);
+            var endDate = new Date(dateOfEnd);
+
+            if (endDate <= startDate) {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini doğru giriniz.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/" + "Missions/ChangeSelectItems",
+                data: { guid: $('#departureMissionId').val(), startDate: dateOfStart, endDate: dateOfEnd, type: "Departure" },
+                success: function (response) {
+                    eval(response);
+                }
+
+            });
+        });
+
+        $('#GetReturnCars').on('click', function () {
+            var dateOfStart = $('#ReturnStartDate').val();
+            var dateOfEnd = $('#ReturnEndDate').val();
+
+            if (dateOfStart == null || dateOfStart == "") {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini giriniz.");
+                return;
+            }
+
+            if (dateOfEnd == null || dateOfEnd == "") {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini giriniz.");
+                return;
+            }
+
+            var startDate = new Date(dateOfStart);
+            var endDate = new Date(dateOfEnd);
+
+            if (endDate <= startDate) {
+                ShowErrorMessage("Lütfen başlama bitiş tarihlerini doğru giriniz.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/" + "Missions/ChangeSelectItems",
+                data: { guid: $('#departureMissionId').val(), startDate: dateOfStart, endDate: dateOfEnd, type: "Return" },
+                success: function (response) {
+                    eval(response);
+                }
+
+            });
+        });
+
+        $('#MissionType').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue == '3') {
+                $('#Div_Areas').show();  // Bölge İçi seçildiyse göster
+            } else {
+                $('#Area').val("");
+                $('#Div_Areas').hide();  // Diğer seçeneklerde gizle
+            }
+        });
+
+        $('#Areas').change(function () {
+            var selectedAreas = $('#Areas option:selected').map(function () {
+                return $(this).text();  // Seçilen alanların metnini al
+            }).get().join(', ');  // Virgülle ayır
+
+            $('#Area').val(selectedAreas);  // Seçilen değerleri input alanına yaz
+        });
+        
+
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Görevlerim</h4>
+        <hr />
+        <button id="NewMission" class="btn btn-primary mb-4">Yeni Görev Ekle</button>
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SaveModal")
+@Html.Partial("_DetailModal")
+@Html.Partial("_SelectCarModal")

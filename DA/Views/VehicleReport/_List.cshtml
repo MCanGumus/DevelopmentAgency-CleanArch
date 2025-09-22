@@ -1,0 +1,45 @@
+﻿@using DA.Domain.Dtos
+@using DA.Domain.Entities
+@using DA.Domain.Enums
+@using DA.Models
+
+@model VehicleRequestReportModel
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Plaka</th>
+            <th>Çalışan</th>
+            <th>Talep Tipi</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Gidiş/Dönüş</th>
+            <th>Açıklama</th>
+            <th class="text-center">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.VehicleRequests.Count != 0)
+        {
+            @foreach (VehicleRequestDto item in Model.VehicleRequests)
+            {
+                <tr id="@item.Id.ToString()">
+                    <td>@item.Vehicle.Plate</td>
+                    <td>@(item.Mission != null ? item.Mission.Employee.Name + " " + @item.Mission.Employee.Surname : "Çalışana Atanmamış")</td>
+                    <td>Görev</td>
+                    <td>@item.DateOfStart.ToString("dd MMMM yyyy HH:mm")</td>
+                    <td>@item.DateOfEnd.ToString("dd MMMM yyyy HH:mm")</td>
+                    <td>
+                        @(item.IsGoing ? "Gidiş" : "Dönüş")
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        <a onclick="AjaxMethod('VehicleRequest/ExportDocument', '@item.Id.ToString()', 'Print')" href=""><i class="mdi mdi-printer text-warning md20"></i></a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

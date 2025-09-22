@@ -1,0 +1,118 @@
+﻿@using DA.Domain.Dtos
+@model EmployeeDto
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+@section scripts
+{
+    <script>
+        hidePreloader();
+
+        $(document).ready(function () {
+            // Input elementine tıklandığında
+            $("#uDateOfBirth").click(function () {
+                // Yeni bir input elementi oluştur ve değerini mevcut input değeriyle ayarla
+                var newInput = $("<input type='date' class='form-control'>").val($(this).val());
+
+                // Mevcut input elementinin yerine yeni input elementini ekle
+                $(this).replaceWith(newInput);
+
+                // Yeni input elementine odaklan
+                newInput.focus();
+            });
+
+            $("#uBloodGroup").val(@((int)Model.BloodGroup)).trigger('change');
+            $("#uGender").val(@((int)Model.Gender)).trigger('change');
+        });
+
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Name @Model.Surname</h4>
+        <hr />
+        <form action="Profile/Update">
+            <input type="hidden" name="Id" />
+            <div class="row mb-2">
+                <label for="IdentificationNumber" class="col-sm-2 col-form-label pt-0">T.C. Kimlik No</label>
+                <div class="col-lg-10 col-md-10 col-sm-10">
+                    <input value="@Model.IdentificationNumber" id="uIdentificationNumber" name="IdentificationNumber" class="form-control" maxlength="11" placeholder="T.C. Kimlik No" disabled />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="Name" class="col-sm-2 col-form-label pt-0">Adı</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value="@Model.Name" id="uName" name="Name" class="form-control" maxlength="50" placeholder="Adı" disabled />
+                </div>
+                <label for="Surname" class="col-sm-2 col-form-label pt-0">Soyadı</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value="@Model.Surname" id="uSurname" name="Surname" class="form-control" maxlength="50" placeholder="Soyadı" disabled />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="MotherName" class="col-sm-2 col-form-label pt-0">Anne Adı</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value ="@Model.MotherName" id="uMotherName" name="MotherName" class="form-control" maxlength="50" placeholder="Anne Adı" />
+                </div>
+                <label for="FatherName" class="col-sm-2 col-form-label pt-0">Baba Adı</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value="@Model.FatherName" id="uFatherName" name="FatherName" class="form-control" maxlength="50" placeholder="Baba Adı" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="PlaceOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Yeri</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value="@Model.PlaceOfBirth" id="uPlaceOfBirth" name="PlaceOfBirth" class="form-control" maxlength="50" placeholder="Doğum Yeri" />
+                </div>
+                <label for="DateOfBirth" class="col-sm-2 col-form-label pt-0">Doğum Tarihi</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input type="text" value="@Model.DateOfBirth.ToString("dd.MM.yyyy")" id="uDateOfBirth" name="DateOfBirth" class="form-control" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="BloodGroup" class="col-sm-2 col-form-label pt-0">Kan Grubu</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <select value="@((int)Model.BloodGroup)" id="uBloodGroup" name="BloodGroup" class="form-control select2" style="width: 100%">
+                        <option value="1">A+</option>
+                        <option value="2">A-</option>
+                        <option value="3">B+</option>
+                        <option value="4">B-</option>
+                        <option value="5">AB+</option>
+                        <option value="6">AB-</option>
+                        <option value="7">0+</option>
+                        <option value="8">0-</option>
+                    </select>
+                </div>
+                <label for="Gender" class="col-sm-2 col-form-label pt-0">Cinsiyet</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <select value="@Model.Gender" id="uGender" name="Gender" class="form-control select2" style="width: 100%">
+                        <option value="1">Erkek</option>
+                        <option value="2">Kadın</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="Email" class="col-sm-2 col-form-label pt-0">E-posta</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input value="@Model.Email" type="email" id="uEmail" name="Email" class="form-control" maxlength="50" placeholder="E-posta" disabled />
+                </div>
+                <label for="Password" class="col-sm-2 col-form-label pt-0">Şifre</label>
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <input type="password" id="Password" name="Password" class="form-control" maxlength="50" placeholder="Şifre" />
+                </div>
+            </div>
+            <hr />
+            <div class="row fr" style="flex-wrap: nowrap;">
+                <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                <div class="col-lg-10 col-md-10 col-sm-11">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+﻿@using DA.Controllers
+@using DA.Controllers.MissionModule
+@using DA.Domain.Dtos
+@using DA.Domain.Enums
+@using DA.Models
+
+@model MissionReportModel
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Tipi</th>
+            <th>Çalışan</th>
+            <th>Türü</th>
+            <th>Konu</th>
+            <th>Yer</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Durumu</th>
+            <th class="text-center">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Missions.Count != 0)
+        {
+            @foreach (MissionDto item in Model.Missions)
+            {
+                <tr id="@item.Id.ToString()">
+                    <td>@MissionController.TypeTR(item.MissionType)</td>
+                    <td>@item.Employee.Name @item.Employee.Surname</td>
+                    <td>@item.SubjectType.ToString()</td>
+                    <td>@item.Subject</td>
+                    <td>@item.Area</td>
+                    <td>@item.DateOfStart.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.DateOfEnd.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@MissionController.StateTR(item.State)</td>
+                    <td>
+                        <a onclick="AjaxMethod('Missions/OpenDetail', '@item.Id.ToString()', 'OpenDetail')" href=""><i class="mdi mdi-file text-info md20"></i></a>
+                        @if (item.State == EnumState.Accepted)
+                        {
+                            <a onclick="AjaxMethod('Missions/ExportDocument', '@item.Id.ToString()', 'Print')" href=""><i class="mdi mdi-printer text-warning md20"></i></a>
+                            <a class="btn btn-danger" onclick="AjaxMethod('AllMissions/Reject', '@item.Id.ToString()', 'RejectMission')" href="">Reddet</a>
+                        }
+                        else if (item.State == EnumState.Pending)
+                        {
+                            <a class="btn btn-success" onclick="AjaxMethod('AllMissions/Accept', '@item.Id.ToString()', 'AcceptMission')" href="">Kabul Et</a>
+                            <a class="btn btn-danger" onclick="AjaxMethod('AllMissions/Reject', '@item.Id.ToString()', 'RejectMission')" href="">Reddet</a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

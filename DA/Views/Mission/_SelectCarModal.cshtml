@@ -1,0 +1,128 @@
+﻿<div class="container">
+    <div class="modal fade" id="ModalMissionSelectCar" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="TitleSelectCar" class="font-weight-bold">Görev Detayları</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <div id="SingleSelectController" style="display: none;" class="row">
+                        <label id="IsSingleVehicleLabel" for="IsSingleVehicle" class="col-sm-5 col-form-label pt-0 bold">Gidiş-Dönüş Tek Araçla Gidecekseniz Burayı Tıklayın --></label>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <input id="IsSingleVehicle" type="checkbox" class="form-check-input" />
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="SingleSelect" class="row" style="display: none;">
+                        <div class="col-12">
+                            <form action="Missions/SaveDepartureReturnVehicleRequest">
+                                <input type="hidden" id="departureReturnMissionId" name="IdMissionFK" />
+                                <div class="row mb-2" id="Div_DepartureAndReturn">
+                                    <label for="IdDepartureReturnVehicleFK" class="col-sm-4 col-form-label pt-0">Gidiş-Dönüş Aracı Seç</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <select id="IdDepartureReturnVehicleFK" name="IdVehicleFK" class="form-control select2" style="width: 100%;">
+                                            <option val="0">Seçiniz...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row fr" style="flex-wrap: nowrap;">
+                                    <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                                    <div class="col-lg-10 col-md-10 col-sm-11">
+                                        <button id="submitSingle" type="submit" class="btn btn-primary">Gidiş-Dönüş Aracını Kaydet</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <hr />
+                    <div id="SeperatedSelects" class="row">
+                        <div class="col-6">
+                            <label class="bold">Gidiş Aracı <p id="currentDepartureCar"></p></label>
+                            <hr />
+                            <form action="Missions/SaveDepartureVehicleRequest">
+                                <input type="hidden" id="departureMissionId" name="IdMissionFK" />
+                                <div class="row mb-2">
+                                    <label for="DepartureStartDate" class="col-sm-4 col-form-label pt-0">Araç Alım Tarihi<br /></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <input type="datetime-local" id="DepartureStartDate" name="DateOfStart" class="form-control" style="width: 100%;" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <label for="DepartureEndDate" class="col-sm-4 col-form-label pt-0">Araç Teslim Tarihi<br /></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <input type="datetime-local" id="DepartureEndDate" name="DateOfEnd" class="form-control" style="width: 100%;" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <label class="col-sm-4 col-form-label pt-0"></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8">
+                                        <button id="GetDepartureCars" type="button" class="btn btn-success fr">Tarihlerdeki Müsait Araçları Getir</button>
+                                    </div>
+                                </div>
+                                <div class="row mb-2" id="Div_DepartureAndReturn">
+                                    <label for="IdDepartureVehicleFK" class="col-sm-4 col-form-label pt-0">Gidiş Aracı Seç</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <select id="IdDepartureVehicleFK" name="IdVehicleFK" class="form-control select2" style="width: 100%;">
+                                            <option val="0">Seçiniz...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row fr" style="flex-wrap: nowrap;">
+                                    <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                                    <div class="col-lg-10 col-md-10 col-sm-11">
+                                        <button id="submitGoes" type="submit" class="btn btn-primary">Gidiş Aracını Kaydet</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-6" style="border-left: 1px solid black; height: 100%;">
+                            <label class="bold">Dönüş Aracı <p id="currentReturnCar"></p></label>
+                            <hr />
+                            <form action="Missions/SaveReturnVehicleRequest">
+                                <input type="hidden" id="returnMissionId" name="IdMissionFK" />
+                                <div class="row mb-2">
+                                    <label for="ReturnStartDate" class="col-sm-4 col-form-label pt-0">Araç Alım Tarihi<br /></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <input type="datetime-local" id="ReturnStartDate" name="DateOfStart" class="form-control" style="width: 100%;" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <label for="ReturnEndDate" class="col-sm-4 col-form-label pt-0">Araç Teslim Tarihi<br /></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <input type="datetime-local" id="ReturnEndDate" name="DateOfEnd" class="form-control" style="width: 100%;" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <label class="col-sm-4 col-form-label pt-0"></label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8">
+                                        <button id="GetReturnCars" type="button" class="btn btn-success fr">Tarihlerdeki Müsait Araçları Getir</button>
+                                    </div>
+                                </div>
+                                <div class="row mb-2" id="Div_DepartureAndReturn">
+                                    <label for="IdReturnVehicleFK" class="col-sm-4 col-form-label pt-0">Dönüş Aracı Seç</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-7">
+                                        <select id="IdReturnVehicleFK" name="IdVehicleFK" class="form-control select2" style="width: 100%;">
+                                            <option val="0">Seçiniz...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row fr" style="flex-wrap: nowrap;">
+                                    <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                                    <div class="col-lg-10 col-md-10 col-sm-11">
+                                        <button id="submitReturns" type="submit" class="btn btn-primary">Dönüş Aracını Kaydet</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

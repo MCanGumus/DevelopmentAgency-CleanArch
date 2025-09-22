@@ -1,0 +1,283 @@
+﻿@using DA.Components.System
+@using DA.Domain.Dtos
+@using DA.Models
+@model PermissionsWithEmployees
+
+@{
+    LoginSessionModel model = SessionHelper.GetEmployeeLoggingIn(Context);
+
+    Guid id = model.UserGid;
+
+    EmployeeDto employee = Model.Employees.Find(x => x.Id == id);
+}
+
+<!-- Ekle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalPermission" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni İzin Ekle (Kalan Yıllık İzin Sayısı: @employee.TotalYearlyLeave / Kalan Denkleştirme İzni Sayısı: @employee.TotalEqualizationLeave)</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Permissions/Save">
+                        <input type="hidden" name="Id" />
+                        <div class="row mb-2" style="display:none;">
+                            <label for="" class="col-sm-2 col-form-label pt-0">İzin Türü</label>
+                            <div class="col-sm-10">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="NormalPermission" value="Normal" checked>
+                                                Ücretsiz İzin
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="YearlyPermission" value="Yearly">
+                                                Yıllık İzin
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="ExcusedPermission" value="Excused">
+                                                Mazaret İzni
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_ExcusedLeave" style="display: none;">
+                            <input type="hidden" id="ExcusedLeave" name="ExcusedLeave" />
+                            <label for="ExcusedLeave" class="col-sm-2 col-form-label pt-0">Mazaret İzni</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="ExcusedLeaveSelect" name="ExcusedLeaveSelect" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="5">Evlilik Diğer-Yardımcı Personel (Maks. 5 gün) </option>
+                                    <option value="10">Yangın su baskını ve deprem gibi afetlere maruz kalmaları Diğer-Yardımcı Personel (Maks. 10 gün) </option>
+                                    <option value="010">Anne baba eş çocuk veya kardeşlerinin ölümü Diğer Personel (Maks. 10 gün) </option>
+                                    <option value="6">Eş ve çocuk ölümünde Yardımcı hizmetler (Maks. 6 gün) </option>
+                                    <option value="05">Anne baba ve kardeş ölümünde Yardımcı personel (Maks. 5 gün)</option>
+                                    <option value="3">İkinci derece akrabalarının ölümü halinde Diğer personel (Maks. 3 gün)</option>
+                                    <option value="005">Eşinin doğum yapması halinde Diğer-Yardımcı Personel (Maks. 5 gün) </option>
+                                    <option value="0005">Anne baba eş çocuk veya kardeşlerinin ağır hastalığı veya ameliyat olması halinde Diğer personel (Maks. 5 gün)</option>
+                                    <option value="03">İkamet ettiği evden taşınması halinde Diğer Personel (Maks. 3 gün)</option>
+                                    <option value="2">Kayınpeder veya kayın validesinin ölümünde Yardımcı Personel (Maks. 2 gün)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PermissionReason" class="col-sm-2 col-form-label pt-0">İzin Nedeni</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <input id="PermissionReason" name="PermissionReason" class="form-control" maxlength="50" placeholder="İzin Nedeni" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="PermissionReason" class="col-sm-2 col-form-label pt-0">Kayıtlı Adreslerden Seç</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="Addresses" name="Addresses" class="form-control select2" style="width: 100%">
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var item in Model.Addresses)
+                                    {
+                                        <option value="@item.FullAddress">@item.AddressTitle (@item.FullAddress)</option>
+                                    }        
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <label for="PermissionAddress" class="col-sm-2 col-form-label pt-0">İzin Adresi</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="PermissionAddress" name="PermissionAddress" class="form-control" maxlength="50" placeholder="İzin Adresi" ></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_Proxy">
+                            <label for="IdProxyFK" class="col-sm-2 col-form-label pt-0">Vekil</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="IdProxyFK" name="IdProxyFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    @foreach (EmployeeDto item in Model.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="StartDate" class="col-sm-2 col-form-label pt-0">Başlangıç Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="StartDate" name="StartDate" class="form-control" />
+                            </div>
+                            <label for="EndDate" class="col-sm-2 col-form-label pt-0">Bitiş Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="date" id="EndDate" name="EndDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Description" class="col-sm-2 col-form-label pt-0">Açıklama</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="Description" name="Description" class="form-control" maxlength="250" placeholder="Açıklama"></textarea>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Güncelle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalUpdatePermission" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni İzin Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Permissions/Update">
+                        <input type="hidden" id="uId" name="Id" />
+                        <div class="row mb-2" style="display:none;">
+                            <label for="" class="col-sm-2 col-form-label pt-0">İzin Türü</label>
+                            <div class="col-sm-10">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="uNormalPermission" value="Normal" checked>
+                                                Ücretsiz İzin
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="uYearlyPermission" value="Yearly">
+                                                Yıllık İzin
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" name="PermissionType" id="uExcusedPermission" value="Excused">
+                                                Mazaret İzni
+                                                <i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="uDiv_ExcusedLeave" style="display: none;">
+                            <input type="hidden" id="uExcusedLeave" name="ExcusedLeave" />
+                            <label for="uExcusedLeaveSelect" class="col-sm-2 col-form-label pt-0">Mazaret İzni</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uExcusedLeaveSelect" name="ExcusedLeaveSelect" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="5">Evlilik Diğer-Yardımcı Personel (Maks. 5 gün) </option>
+                                    <option value="10">Yangın su baskını ve deprem gibi afetlere maruz kalmaları Diğer-Yardımcı Personel (Maks. 10 gün) </option>
+                                    <option value="010">Anne baba eş çocuk veya kardeşlerinin ölümü Diğer Personel (Maks. 10 gün) </option>
+                                    <option value="6">Eş ve çocuk ölümünde Yardımcı hizmetler (Maks. 6 gün) </option>
+                                    <option value="05">Anne baba ve kardeş ölümünde Yardımcı personel (Maks. 5 gün)</option>
+                                    <option value="3">İkinci derece akrabalarının ölümü halinde Diğer personel (Maks. 3 gün)</option>
+                                    <option value="005">Eşinin doğum yapması halinde Diğer-Yardımcı Personel (Maks. 5 gün) </option>
+                                    <option value="0005">Anne baba eş çocuk veya kardeşlerinin ağır hastalığı veya ameliyat olması halinde Diğer personel (Maks. 5 gün)</option>
+                                    <option value="03">İkamet ettiği evden taşınması halinde Diğer Personel (Maks. 3 gün)</option>
+                                    <option value="2">Kayınpeder veya kayın validesinin ölümünde Yardımcı Personel (Maks. 2 gün)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uPermissionReason" class="col-sm-2 col-form-label pt-0">İzin Nedeni</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <input id="uPermissionReason" name="PermissionReason" class="form-control" maxlength="50" placeholder="İzin Nedeni" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uAddresses" class="col-sm-2 col-form-label pt-0">İzin Adresi Seç</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uAddresses" name="Addresses" class="form-control select2" style="width: 100%">
+                                    <option value="">Seçiniz...</option>
+                                    @foreach (var item in Model.Addresses)
+                                    {
+                                        <option value="@item.FullAddress">@item.AddressTitle (@item.FullAddress)</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="uPermissionAddress" class="col-sm-2 col-form-label pt-0">İzin Adresi</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="uPermissionAddress" name="PermissionAddress" class="form-control" maxlength="50" placeholder="İzin Adresi"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_Proxy">
+                            <label for="uIdProxyFK" class="col-sm-2 col-form-label pt-0">Vekil</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uIdProxyFK" name="IdProxyFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    @foreach (EmployeeDto item in Model.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@item.Id">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uStartDate" class="col-sm-2 col-form-label pt-0">Başlangıç Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="uStartDate" name="StartDate" class="form-control" />
+                            </div>
+                            <label for="uEndDate" class="col-sm-2 col-form-label pt-0">Bitiş Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="uEndDate" name="EndDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uDescription" class="col-sm-2 col-form-label pt-0">Açıklama</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="uDescription" name="Description" class="form-control" maxlength="250" placeholder="Açıklama"></textarea>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

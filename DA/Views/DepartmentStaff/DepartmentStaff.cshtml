@@ -1,0 +1,27 @@
+﻿@using DA.Domain.Dtos
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+@section scripts {
+    <script>
+        $('#NewDepartmentStaff').on('click', function () {
+            $('#ModalDepartmentStaff').modal('show');
+        });
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Birim Personelleri</h4>
+        <hr />
+        <button id="NewDepartmentStaff" class="btn btn-primary mb-4">Yeni Birim Personeli Ekle</button>
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SaveModal")

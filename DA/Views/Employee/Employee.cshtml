@@ -1,0 +1,122 @@
+﻿@using DA.Components.System
+@using DA.Domain.Dtos
+@using DA.Models
+@{
+    Layout = "_Layout";
+}
+
+@{
+    LoginSessionModel loginnedEmployee = SessionHelper.GetEmployeeLoggingIn(Context);
+
+    string userName = "";
+    string userRole = "";
+    string userPhoto = "";
+    string pageTitle = "DA";
+
+    if (loginnedEmployee != null)
+    {
+        userName = loginnedEmployee.UserName;
+        userRole = loginnedEmployee.Role;
+        userPhoto = loginnedEmployee.Photo;
+    }
+    else
+    {
+        Context.Response.Redirect("/");
+    }
+}
+
+@section scripts {
+    <script>
+        $('#NewEmployee').on('click', function () {
+            $('#ModalEmployee').modal('show');
+        });
+
+        $('#ModalEmployee').on('show.bs.modal', function () {
+            // Formu resetlemek için
+            $(this).find('form')[0].reset();
+            // Select2 dropdownları sıfırlamak için
+            $(this).find('select.select2').val('0').trigger('change');
+        });
+
+        $('#ExcelExport').on('click', function () {
+            $.ajax({
+                type: "POST",
+                url: "/" + "Employees/ExcelExport",
+                data: { isExited: false},
+                success: function (response) {
+                    eval(response);
+                }
+            });
+        });
+
+        $('#ExcelExportExited').on('click', function () {
+            $.ajax({
+                type: "POST",
+                url: "/" + "Employees/ExcelExport",
+                data: { isExited: true },
+                success: function (response) {
+                    eval(response);
+                }
+            });
+        });
+
+        $('#GetLaidOffEmployee').on('click', function () {
+
+            var dateOfExit = $('#DateOfExit').val();
+
+            if (dateOfExit == "" || dateOfExit == "") {
+                ShowErrorMessage('Lütfen Çıkış Tarihini Seçiniz.')
+                return;
+            }
+
+            Swal.fire({
+                title: 'İşten Çıkarma Onayı!',
+                text: "Seçili Personel işten çıkarılacak. Devam Edilsin Mi?",
+                icon: 'question',
+                iconColor: '#ea5455',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, işten çıkar!',
+                cancelButtonText: 'Vazgeç',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                padding: 10,
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/" + "Employees/GetLaidOff",
+                        data: { Id: $('#dId').val(), date: dateOfExit  },
+                        success: function (response) {
+                            eval(response);
+                        }
+                    });
+                }
+            });
+            return false;
+
+        });
+
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Personeller</h4>
+        <hr />
+       
+        @if (userRole == "SuperAdmin")
+        {
+            <button id="NewEmployee" class="btn btn-primary mb-4">Yeni Personel Ekle</button>
+            <button id="ExcelExport" class="btn btn-success mb-4 fr">Excel Çıktısı Al</button>
+        }
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SaveModal")
+@Html.Partial("_DetailModal")

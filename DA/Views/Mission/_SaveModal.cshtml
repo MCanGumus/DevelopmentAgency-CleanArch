@@ -1,0 +1,274 @@
+﻿@using DA.Domain.Enums
+@model DA.Models.MissionsAndEmployees
+
+<!-- Ekle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalMission" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Label_Baslik" class="font-weight-bold">Yeni Görev Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Missions/Save">
+                        <input type="hidden" name="Id" />
+                        <div class="row mb-2" id="Div_MissionType">
+                            <label for="MissionType" class="col-sm-2 col-form-label pt-0">Görev Türü</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="MissionType" name="MissionType" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Yurt İçi</option>
+                                    <option value="2">Yurt Dışı</option>
+                                    <option value="3">Bölge İçi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_SubjectType">
+                            <label for="MissionType" class="col-sm-2 col-form-label pt-0">Görev Konusu Türü</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="SubjectType" name="SubjectType" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Toplantı</option>
+                                    <option value="2">Eğitim</option>
+                                    <option value="3">İzleme</option>
+                                    <option value="4">Fuar</option>
+                                    <option value="5">Organizasyon</option>
+                                    <option value="6">Konferans</option>
+                                    <option value="7">Ziyaret</option>
+                                    <option value="8">Diger</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_Proxy">
+                            <label for="IdProxyFK" class="col-sm-2 col-form-label pt-0">Vekil</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="IdProxyFK" name="IdProxyFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    @foreach (var person in Model.Employees.OrderBy(x => x.Name))
+                                    {
+                                        <option value="@person.Id">@person.Name @person.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_Areas">
+                            <label for="Areas" class="col-sm-2 col-form-label pt-0">Bölge İçi İlleri Seç</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="Areas" class="form-control select2" style="width: 100%" multiple>
+                                    <option value="1">Elazığ</option>
+                                    <option value="2">Malatya</option>
+                                    <option value="3">Tunceli</option>
+                                    <option value="4">Bingöl</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Area" class="col-sm-2 col-form-label pt-0">Yer</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <input id="Area" name="Area" class="form-control" maxlength="200" placeholder="Yer" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Subject" class="col-sm-2 col-form-label pt-0">Konu</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="Subject" name="Subject" class="form-control" maxlength="500" placeholder="Konu"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="IsAdvanceRequested" class="col-sm-3 col-form-label pt-0">Avans Gerekiyor Mu?</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <input id="IsAdvanceRequested" type="checkbox" name="IsAdvanceRequested" class="form-check-input" />
+                            </div>
+                            <label for="AdvanceAmount" class="col-sm-2 col-form-label pt-0">Avans</label>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <input id="AdvanceAmount" type="number" name="AdvanceAmount" class="form-control" placeholder="Avans" disabled />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Notes" class="col-sm-2 col-form-label pt-0">Görev Hakkında Not</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="Notes" name="Notes" class="form-control" maxlength="500" placeholder="Görev Hakkında Not"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="DateOfStart" class="col-sm-2 col-form-label pt-0">Başlangıç Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="DateOfStart" name="DateOfStart" class="form-control" />
+                            </div>
+                            <label for="DateOfEnd" class="col-sm-2 col-form-label pt-0">Bitiş Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="DateOfEnd" name="DateOfEnd" class="form-control" />
+                            </div>
+                        </div>
+                       
+                        <div class="row mb-2">
+                            <label for="DepartureVehicle" class="col-sm-2 col-form-label pt-0">Gidiş Aracı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="DepartureVehicle" name="DepartureVehicle" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Kurum Aracı</option>
+                                    <option value="2">Diğer</option>
+                                    <option value="3">Uçak</option>
+                                    <option value="4">Diğer Karayolu Araçları</option>
+                                    <option value="5">Kurum Aracı(Yolcu Olarak)</option>
+                                </select>
+                            </div>
+                            <label for="ReturnVehicle" class="col-sm-2 col-form-label pt-0">Dönüş Aracı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="ReturnVehicle" name="ReturnVehicle" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Kurum Aracı</option>
+                                    <option value="2">Diğer</option>
+                                    <option value="3">Uçak</option>
+                                    <option value="4">Diğer Karayolu Araçları</option>
+                                    <option value="5">Kurum Aracı(Yolcu Olarak)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Güncelle Modalı -->
+<div class="container">
+    <div class="modal fade" id="ModalUpdateMission" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="Title" class="font-weight-bold">Yeni Görev Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form action="Missions/Update">
+                        <input type="hidden" id="uId" name="Id" />
+                        <div class="row mb-2" id="Div_MissionType">
+                            <label for="uMissionType" class="col-sm-2 col-form-label pt-0">Görev Türü</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uMissionType" name="MissionType" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Yurt İçi</option>
+                                    <option value="2">Yurt Dışı</option>
+                                    <option value="3">Bölge İçi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_SubjectType">
+                            <label for="MissionType" class="col-sm-2 col-form-label pt-0">Görev Konusu Türü</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uSubjectType" name="SubjectType" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Toplantı</option>
+                                    <option value="2">Eğitim</option>
+                                    <option value="3">İzleme</option>
+                                    <option value="4">Fuar</option>
+                                    <option value="5">Organizasyon</option>
+                                    <option value="6">Konferans</option>
+                                    <option value="7">Ziyaret</option>
+                                    <option value="8">Diger</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_Proxy">
+                            <label for="uIdProxyFK" class="col-sm-2 col-form-label pt-0">Vekil</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <select id="uIdProxyFK" name="IdProxyFK" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    @foreach (var person in Model.Employees)
+                                    {
+                                        <option value="@person.Id">@person.Name @person.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uArea" class="col-sm-2 col-form-label pt-0">Yer</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <input id="uArea" name="Area" class="form-control" maxlength="200" placeholder="Yer" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uSubject" class="col-sm-2 col-form-label pt-0">Konu</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="uSubject" name="Subject" class="form-control" maxlength="500" placeholder="Konu"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uIsAdvanceRequested" class="col-sm-3 col-form-label pt-0">Avans Gerekiyor Mu?</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <input id="uIsAdvanceRequested" type="checkbox" name="IsAdvanceRequested" class="form-check-input" />
+                            </div>
+                            <label for="uAdvanceAmount" class="col-sm-2 col-form-label pt-0">Avans</label>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <input id="uAdvanceAmount" type="number" name="AdvanceAmount" class="form-control" placeholder="Avans" disabled />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="uNotes" class="col-sm-2 col-form-label pt-0">Görev Hakkında Not</label>
+                            <div class="col-lg-10 col-md-10 col-sm-5">
+                                <textarea id="uNotes" name="Notes" class="form-control" maxlength="500" placeholder="Görev Hakkında Not"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <label for="uDepartureVehicle" class="col-sm-2 col-form-label pt-0">Gidiş Aracı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="uDepartureVehicle" name="DepartureVehicle" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Kurum Aracı</option>
+                                    <option value="2">Diğer</option>
+                                    <option value="3">Uçak</option>
+                                    <option value="4">Diğer Karayolu Araçları</option>
+                                    <option value="5">Kurum Aracı(Yolcu Olarak)</option>
+                                </select>
+                            </div>
+                            <label for="uReturnVehicle" class="col-sm-2 col-form-label pt-0">Dönüş Aracı</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <select id="uReturnVehicle" name="ReturnVehicle" class="form-control select2" style="width: 100%">
+                                    <option value="0">Seçiniz...</option>
+                                    <option value="1">Kurum Aracı</option>
+                                    <option value="2">Diğer</option>
+                                    <option value="3">Uçak</option>
+                                    <option value="4">Diğer Karayolu Araçları</option>
+                                    <option value="5">Kurum Aracı(Yolcu Olarak)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="SelectDates">
+                            <label for="uDateOfStart" class="col-sm-2 col-form-label pt-0">Başlangıç Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="uDateOfStart" name="DateOfStart" class="form-control" />
+                            </div>
+                            <label for="uDateOfEnd" class="col-sm-2 col-form-label pt-0">Bitiş Tarihi</label>
+                            <div class="col-lg-4 col-md-4 col-sm-5">
+                                <input type="datetime-local" id="uDateOfEnd" name="DateOfEnd" class="form-control" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

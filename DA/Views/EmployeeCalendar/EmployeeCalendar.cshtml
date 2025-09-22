@@ -1,0 +1,108 @@
+﻿@using DA.Domain.Dtos
+@{
+    Layout = "_Layout";
+}
+@using DA.Models
+@model EmployeeCalendarModel
+
+@section scripts {
+
+    <script>
+        hidePreloader();
+
+        $('#OneMonthBefore').on('click', function () {
+
+            var currentDate = $("#CurrentDate").val();
+
+            // Split the date string by '.'
+            var dateParts = currentDate.split('.');
+
+            // Convert the month part to an integer and subtract 1
+            var month = parseInt(dateParts[1], 10) - 1;
+
+            // Handle the case where the month goes below 1
+            if (month < 1) {
+                month = 12;
+                dateParts[2] = (parseInt(dateParts[2].split(' ')[0], 10) - 1) + " 00:00:00";
+            }
+
+            // Update the month part in the dateParts array
+            dateParts[1] = month.toString().padStart(2, '0');
+
+            dateParts[0] = '01';
+
+            // Join the date parts back into a string and update the hidden field
+            var newDate = dateParts.join('.');
+
+            $("#CurrentDate").val(newDate);
+
+            $.ajax({
+                type: "POST",
+                url: "/" + "EmployeeCalendar/Listing",
+                data: { filter: newDate },
+                success: function (response) {
+                    // Handle the response here
+                    $('body').html(response); // Render the returned HTML
+                }
+            });
+        });
+
+        $('#OneMonthLater').on('click', function () {
+
+            var currentDate = $("#CurrentDate").val();
+
+            // Split the date string by '.'
+            var dateParts = currentDate.split('.');
+
+            // Convert the month part to an integer and add 1
+            var month = parseInt(dateParts[1], 10) + 1;
+
+            // Handle the case where the month goes above 12
+            if (month > 12) {
+                month = 1;
+                dateParts[2] = (parseInt(dateParts[2].split(' ')[0], 10) + 1) + " 00:00:00";
+            }
+
+            // Update the month part in the dateParts array
+            dateParts[1] = month.toString().padStart(2, '0');
+
+            dateParts[0] = '01';
+
+            // Join the date parts back into a string and update the hidden field
+            var newDate = dateParts.join('.');
+
+            $("#CurrentDate").val(newDate);
+
+            $.ajax({
+                type: "POST",
+                url: "/" + "EmployeeCalendar/Listing",
+                data: { filter: newDate },
+                success: function (response) {
+                    // Handle the response here
+                    $('body').html(response); // Render the returned HTML
+                }
+            });
+        });
+
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Personel Takvimi</h4>
+        <hr />
+        <div class="row">
+            <input type="hidden" id="CurrentDate" value="@Model.Filter" />
+            <div class="col-1"><button id="OneMonthBefore" class="btn btn-primary mb-4"> < </button></div>
+            <div class="col-3"></div>
+            <div class="col-4"><label class="d-flex justify-content-center align-items-center">@Model.Filter.ToString("MMMM") @Model.Filter.Year</label></div>
+            <div class="col-3"></div>
+            <div class="col-1 fr"><button id="OneMonthLater" class="btn btn-primary mb-4"> > </button></div>
+        </div>
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@* @Html.Partial("_SaveModal") *@

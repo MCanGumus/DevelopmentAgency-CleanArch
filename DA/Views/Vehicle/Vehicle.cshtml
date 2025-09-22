@@ -1,0 +1,25 @@
+﻿@using DA.Domain.Dtos
+@{
+    Layout = "_Layout";
+}
+
+@section scripts {
+    <script>
+        $('#NewVehicle').on('click', function () {
+            $('#ModalVehicle').modal('show');
+        });
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Araçlar</h4>
+        <hr />
+        <button id="NewVehicle" class="btn btn-primary mb-4">Yeni Araç Ekle</button>
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SaveModal")

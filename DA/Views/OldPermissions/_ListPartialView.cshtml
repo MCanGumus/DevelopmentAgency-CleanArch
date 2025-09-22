@@ -1,0 +1,113 @@
+﻿@using DA.Controllers
+@using DA.Domain.Dtos
+@using DA.Domain.Entities.OldDatas
+@using DA.Domain.Enums
+@using DA.Models
+@model OldPermissionsModel
+@{
+    Layout = "_Layout";
+}
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            var dateOfStart = '@Model.StartDate.ToString("dd.MM.yyyy")';
+            var dateOfEnd = '@Model.EndDate.ToString("dd.MM.yyyy")';
+
+            $('.drng').daterangepicker({
+                timePicker: true,
+                timePicker24Hour: true,
+                locale: {
+                    format: 'DD.MM.YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Tamam',
+                    cancelLabel: 'İptal',
+                    fromLabel: 'Başlangıç',
+                    toLabel: 'Bitiş',
+                    customRangeLabel: 'Özel Aralık',
+                    weekLabel: 'Hf',
+                    daysOfWeek: ['Pz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cu', 'Cmt'],
+                    monthNames: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                    firstDay: 1
+                },
+                opens: 'right'
+            });
+
+            $('#DateRangeFilter').val(dateOfStart + " - " + dateOfEnd)
+
+            $('#DateRangeFilter').on('apply.daterangepicker', function (ev, picker) {
+                var dateOfStart = picker.startDate.format('YYYY-MM-DD HH:mm');
+                var dateOfEnd = picker.endDate.format('YYYY-MM-DD HH:mm');
+
+                $('#departureDateOfStart').val(dateOfStart);
+                $('#departureDateOfEnd').val(dateOfEnd);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/" + "OldPermissions/OldPermissionsWithFilter",
+                    data: { startDate: dateOfStart, endDate: dateOfEnd },
+                    success: function (response) {
+                        // Handle the response here
+                        $('body').html(response); // Render the returned HTML
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title"> Eski İzin Raporları</h4>
+        <hr />
+        <div class="row mb-2">
+            <label for="DateRangeFilter" class="col-sm-2 col-form-label pt-0 bold">Tarih Aralığı Seçiniz</label>
+            <div class="col-lg-10 col-md-10 col-sm-7">
+                <input type="text" id="DateRangeFilter" name="date-range" class="drng form-control" style="width: 100%;" />
+            </div>
+        </div>
+        <hr />
+        <div class="table-responsive">
+            <table class="table dataTable table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>İzin Id</th>
+                        <th>Personel Adı Soyadı</th>
+                        <th>İzin Nedeni</th>
+                        <th>İzin Başlangıç</th>
+                        <th>İzin Bitiş</th>
+                        <th>Ad</th>
+                        <th>Toplam</th>
+                        <th>Vekil Id</th>
+                        <th>Onay</th>
+                        <th>Mazaret Mi?</th>
+                        <th>Mazaret Kodu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (OldPermissions item in Model.Permissions)
+                    {
+                        <tr id="@item.Id.ToString()">
+                            <td>@item.Id</td>
+                            <td>@item.IzinId</td>
+                            <td>@(Model.Employees.Where(x => x.Personel_ID == item.Personel_ID).FirstOrDefault().AdSoyad)</td>
+                            <td>@item.IzinNedeni</td>
+                            <td>@item.IzinBaslangic?.ToString("dd/MM/yyyy")</td> <!-- Date formatted -->
+                            <td>@item.IzinBitis?.ToString("dd/MM/yyyy")</td> <!-- Date formatted -->
+                            <td>@(Model.Employees.Where(x => x.Personel_ID == item.Ad).FirstOrDefault() == null ? "" : Model.Employees.Where(x => x.Personel_ID == item.Ad).FirstOrDefault().AdSoyad)</td>
+                            <td>@item.Toplam</td>
+                            <td>@(Model.Employees.Where(x => x.Personel_ID == item.VekID).FirstOrDefault() == null ? "" : Model.Employees.Where(x => x.Personel_ID == item.VekID).FirstOrDefault().AdSoyad)</td>
+                            <td>@(item.Onay == true ? "Onaylandı" : "Reddedildi")</td> <!-- Boolean as text -->
+                            <td>@(item.MazaretMi == true ? "Evet" : "Hayır")</td> <!-- Boolean as text -->
+                            <td>@item.MazaretKodu</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

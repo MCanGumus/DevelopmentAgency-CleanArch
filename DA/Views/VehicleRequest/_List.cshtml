@@ -1,0 +1,80 @@
+﻿@using DA.Domain.Dtos
+@using DA.Domain.Entities
+@using DA.Domain.Enums
+@using DA.Models
+
+@model VehicleRequestsWithEmployees
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Plaka</th>
+            <th>Çalışan</th>
+            <th>Talep Tipi</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Gidiş/Dönüş</th>
+            <th>Açıklama</th>
+            <th class="text-center">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Requests.Count != 0)
+        {
+            @foreach (VehicleRequestDto item in Model.Requests)
+            {
+                <tr id="@item.Id.ToString()">
+                    <td>@item.Vehicle.Plate</td>
+                    <td>
+                        @{
+                            string nameSurname = "";
+
+                            if (item.RequestType == EnumRequestType.Valilik)
+                            {
+                                nameSurname = "Valiliğe atandı.";
+                            }
+                            else if (item.Mission != null)
+                            {
+                                nameSurname = item.Mission.Employee.Name + " " + item.Mission.Employee.Surname;
+                            }
+                            else if (item.IdEmployeeFK != null)
+                            {
+                                var employee = Model.Employees.Find(x => x.Id == item.IdEmployeeFK);
+                                if (employee != null)
+                                {
+                                    nameSurname = employee.Name + " " + employee.Surname;
+                                }
+                                else
+                                {
+                                    nameSurname = "Çalışan Yok";
+                                }
+                            }
+                            else
+                            {
+                                nameSurname = "Çalışan Yok";
+                            }
+                        }
+                        @nameSurname
+                    </td>
+                    <td>@(item.RequestType == EnumRequestType.Mission ? "Görev" : item.RequestType.ToString())</td>
+                    <td>@item.DateOfStart.ToString("dd MMMM yyyy HH:mm")</td>
+                    <td>@item.DateOfEnd.ToString("dd MMMM yyyy HH:mm")</td>
+                    <td>
+                        @(item.IsGoing ? "Gidiş" : "Dönüş")
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        <a onclick="AjaxMethod('VehicleRequest/ExportDocument', '@item.Id.ToString()', 'Print')" href=""><i class="mdi mdi-printer text-warning md20"></i></a>
+                        @if (item.DateOfEnd > DateTime.Now)
+                        {
+                            <a onclick="AjaxMethod('VehicleRequest/Delete', '@item.Id.ToString()', 'Delete')" href=""><i class="mdi mdi-delete text-danger md20"></i></a>
+                        }
+                        
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,59 @@
+﻿@using DA.Controllers
+@using DA.Controllers.MissionModule
+@using DA.Domain.Dtos
+@using DA.Domain.Enums
+@model DA.Models.MissionsAndEmployees
+
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Tipi</th>
+            <th>Türü</th>
+            <th>Konu</th>
+            <th>Yer</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Gidiş Aracı</th>
+            <th>Dönüş Aracı</th>
+            <th>Durumu</th>
+            <th class="text-center">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Missions.Count != 0)
+        {
+            @foreach (MissionDto item in Model.Missions)
+            {
+                <tr id="@item.Id.ToString()">
+                    <td>@MissionController.TypeTR(item.MissionType)</td>
+                    <td>@item.SubjectType.ToString()</td>
+                    <td>@item.Subject</td>
+                    <td>@item.Area</td>
+                    <td>@item.DateOfStart.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.DateOfEnd.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@MissionController.CarDepartureTypeTR(item.DepartureVehicle)</td>
+                    <td>@MissionController.CarReturnTypeTR(item.ReturnVehicle)</td>
+                    <td>@MissionController.StateTR(item.State)</td>
+                    <td>
+                        <a onclick="AjaxMethod('Missions/OpenDetail', '@item.Id.ToString()', 'OpenDetail')" href=""><i class="mdi mdi-file text-info md20"></i></a>
+                        @if (item.State == EnumState.Accepted)
+                        {
+                            <a onclick="AjaxMethod('Missions/ExportDocument', '@item.Id.ToString()', 'Print')" href=""><i class="mdi mdi-printer text-warning md20"></i></a>
+                        }
+                        @if (item.State == EnumState.Pending)
+                        {
+                            if (item.DepartureVehicle == EnumDepartureVehicle.InstitutionalVehicle || item.ReturnVehicle == EnumReturnVehicle.InstitutionalVehicle ||
+                            item.DepartureVehicle == EnumDepartureVehicle.InstitutionalVehicleTraveller || item.ReturnVehicle == EnumReturnVehicle.InstitutionalVehicleTraveller)
+                            {
+                                <a onclick="AjaxMethod('Missions/OpenModalSelectCar', '@item.Id.ToString()', 'OpenModalSelectCar')" href=""><i class="mdi mdi-car text-primary md20"></i></a>
+                            }
+                            <a onclick="AjaxMethod('Missions/OpenModal', '@item.Id.ToString()', 'Update')" href=""><i class="mdi mdi-table-edit text-success md20"></i></a>
+                            <a onclick="AjaxMethod('Missions/Delete', '@item.Id.ToString()', 'Delete')" href=""><i class="mdi mdi-delete text-danger md20"></i></a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

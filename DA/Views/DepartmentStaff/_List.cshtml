@@ -1,0 +1,43 @@
+﻿@using DA.Domain.Dtos
+@using DA.Models
+@model DepartmentStaffModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<table class="table dataTable table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                Çalışan
+            </th>
+            <th>
+                Pozisyon
+            </th>
+            <th class="text-center">
+                İşlemler
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.DepartmentStaffs.Count != 0)
+        {
+            @foreach (DepartmentStaffDto item in Model.DepartmentStaffs)
+            {
+                <tr id="@item.Id.ToString()">
+                    <td>
+                        @item.Employee.Name @item.Employee.Surname
+                    </td>
+                    <td>
+                        @item.Apellation.Name
+                    </td>
+                    <td>
+                        <a onclick="AjaxMethod('DepartmentStaffs/OpenModal', '@item.Id.ToString()', 'Update')" href=""><i class="mdi mdi-table-edit text-success md20"></i></a>
+                        <a onclick="AjaxMethod('DepartmentStaffs/Delete', '@item.Id.ToString()', 'Delete')" href=""><i class="mdi mdi-delete text-danger md20"></i></a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

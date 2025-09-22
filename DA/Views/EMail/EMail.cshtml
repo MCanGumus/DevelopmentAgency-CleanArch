@@ -1,0 +1,25 @@
+﻿@using DA.Domain.Dtos
+@{
+    Layout = "_Layout";
+}
+
+@section scripts {
+    <script>
+        $('#NewEMail').on('click', function () {
+            $('#ModalEMail').modal('show');
+        });
+    </script>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Mail Adreslerim</h4>
+        <hr />
+        <button id="NewEMail" class="btn btn-primary mb-4">Yeni Mail Ekle</button>
+        <div class="table-responsive">
+            @Html.Partial("_List")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SaveModal")

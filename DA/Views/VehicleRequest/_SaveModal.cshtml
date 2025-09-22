@@ -1,0 +1,59 @@
+﻿<div class="container">
+    <div class="modal fade" id="ModalVehicleRequest" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg modal-simple w-75">
+            <div class="modal-content p0 border-0">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white">
+                        <label id="TitleSelectCar" class="font-weight-bold">Yeni Araç Talebi Ekle</label>
+                    </h4>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <label class="fs13 pb-2">*Buradan yalnızca sistem üzerindeki kayıtlı olmayan şöforler adına kayıt yapabilirsiniz. Örn. Valiliğe araç atama. vb.</label><br />
+                    <form action="VehicleRequest/Save">
+                        <input type="hidden" id="departureMissionId" name="IdMissionFK" />
+                        <div class="row mb-2">
+                            <label for="DepartureStartDate" class="col-sm-2 col-form-label pt-0">Araç Alım Tarihi<br /></label>
+                            <div class="col-lg-10 col-md-10 col-sm-7">
+                                <input type="datetime-local" id="DepartureStartDate" name="DateOfStart" class="form-control" style="width: 100%;" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="DepartureEndDate" class="col-sm-2 col-form-label pt-0">Araç Teslim Tarihi<br /></label>
+                            <div class="col-lg-10 col-md-10 col-sm-7">
+                                <input type="datetime-local" id="DepartureEndDate" name="DateOfEnd" class="form-control" style="width: 100%;" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-2 col-form-label pt-0"></label>
+                            <div class="col-lg-10 col-md-10 col-sm-8">
+                                <button id="GetDepartureCars" type="button" class="btn btn-success fr">Tarihlerdeki Müsait Araçları Getir</button>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_DepartureAndReturn">
+                            <label for="IdDepartureVehicleFK" class="col-sm-2 col-form-label pt-0">Gidiş Aracı Seç</label>
+                            <div class="col-lg-10 col-md-10 col-sm-7">
+                                <select id="IdDepartureVehicleFK" name="IdVehicleFK" class="form-control select2" style="width: 100%;">
+                                    <option val="0">Seçiniz...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2" id="Div_DepartureAndReturn">
+                            <label for="IdDepartureVehicleFK" class="col-sm-2 col-form-label pt-0">Açıklama</label>
+                            <div class="col-lg-10 col-md-10 col-sm-7">
+                                <textarea id="Description" name="Description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row fr" style="flex-wrap: nowrap;">
+                            <label class="col-sm-2 col-form-label pt-0">&nbsp;</label>
+                            <div class="col-lg-10 col-md-10 col-sm-11">
+                                <button id="submitGoes" type="submit" class="btn btn-primary">Gidiş Aracını Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
